@@ -8,7 +8,7 @@ A generic RESTful NodeJS client for interacting with JSON APIs.
 
 To use this client you just need to import ApiClient and initialize it with an API Key, Secret and URL endpoint
 
-    var api = require('restful-client')(apiKey, apiSecret, apiUrl);
+    var api = require('node-restful-client')(apiKey, apiSecret, apiUrl);
 
 Now that you have a RESTful API object you can start sending requests.
 
@@ -40,7 +40,7 @@ The framework supports GET, PUT, POST and DELETE requests:
 
 The client can be extended to be more application specific, e.g. `api.createBook('Twilight', 'Stephenie Meyer', callback);`:
 
-    var RestfulClient = require('restful-client');
+    var RestfulClient = require('node-restful-client');
 
     module.exports = function (apiKey, apiSecret) {
         return new ApiClient(apiKey, apiSecret);
