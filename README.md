@@ -8,7 +8,7 @@ A generic RESTful NodeJS client for interacting with JSON APIs.
 
 To use this client you just need to import ApiClient and initialize it with an API Key, Secret and URL endpoint
 
-    $api = new RestfulClient\ApiClient('#your_api_key', '#your_api_secret', '#your_api_endpoint');
+    var api = require('restful-client')(apiKey, apiSecret, apiUrl);
 
 Now that you have a RESTful API object you can start sending requests.
 
@@ -23,44 +23,35 @@ All requests include the following headers by default:
 
 The framework supports GET, PUT, POST and DELETE requests:
 
-    $api->get('/books/');
-    $api->post('/books/', array('title' => 'Twilight', 'author' => 'Stephenie Meyer'));
-    $api->put('/book/Twilight/', array('release_date' => '06/09/2006'));
-    $api->delete('/book/Twilight/');
-
-## Verifying Requests
-
-Two helpers are built in to verify the success of requests made. `ok()` checks for a 20x status code and returns a boolean, `errors()` returns the body content as an associative array if the status code is not 20x:
-
-    $req = $api->get('/books/');
-
-    if( $req->ok() ) {
-        echo 'Success!';
-    } else {
-        echo $req->errors();
-    }
+    api.get('/books/', {}, function (err, res) {
+        console.log(res);
+    });
+    api.post('/books/', {'title': 'Twilight', 'author': 'Stephenie Meyer' }, function (err, res) {
+        console.log(res);
+    });
+    api.put('/book/Twilight/', {'release_date': '06/09/2006' }, function (err, res) {
+        console.log(res);
+    });
+    api.del('/book/Twilight/', {}, function (err, res) {
+        console.log(res);
+    });
 
 ## Extending the client
 
-The client can be extended to be more application specific, e.g. `$api->create_book('Twilight', 'Stephenie Meyer');`:
+The client can be extended to be more application specific, e.g. `api.createBook('Twilight', 'Stephenie Meyer', callback);`:
 
-    class YourAPI extends \RestfulClient\ApiClient 
-    {
-        public function __construct($api_key, $api_secret)
-        {
-            $api_url = 'https://api.yourdomain.com'
-            parent::__construct($api_key, $api_secret, $api_url);
-        }
+    var RestfulClient = require('restful-client');
 
-        public function create_book($title, $author)
-        {
-            $data = array(
-                'title' => $title,
-                'author' => $author,
-            );
+    module.exports = function (apiKey, apiSecret) {
+        return new ApiClient(apiKey, apiSecret);
+    };
 
-            return $this->post('/books/', $data);
-        }
+    function ApiClient(apiKey, apiSecret) {
+        this.api = new RestfulClient(apiKey, apiSecret, 'http://restful.jamiecressey.com:5000');
+    }
+
+    ApiClient.prototype.createBook = function (data, callback) {
+        this.api.post('/books/', data, callback);
     }
 
 ## Contributing
